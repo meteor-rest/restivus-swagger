@@ -13,12 +13,14 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
   api.use('ecmascript');
+  api.use('nimble:restivus@0.8.7');
   api.addFiles('server/restivus-swagger.js', ['server']);
 });
 
 Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('tinytest');
+  api.use('nimble:restivus@0.8.7');
   api.use('apinf:restivus-swagger');
   api.use('test.js');
 });
