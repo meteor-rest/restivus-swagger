@@ -1,4 +1,6 @@
-// Extension to Restivus prototype
+// Extension to Restivus
+
+// Add swagger route and generate valid swagger.json
 Restivus.prototype.addSwagger = function(path) {
   // Call add Route
   const restivus = this;
@@ -13,51 +15,52 @@ Restivus.prototype.addSwagger = function(path) {
         _.extend(doc, config.swagger);
 
         // Loop through all routes
-        let paths = [];
+        let paths = {};
         _.each(restivus._routes, function(route) {
-          //console.log(route.path);
-          //console.log(route.endpoints);
+          // Exclude swagger and login paths
+          if(route.path !== path &&
+            route.path !== 'login' && route.path !== 'logout' )
+          {
+            // Use path as key
+            let key = '/'.concat(route.path);
 
-          // TODO: Format to swagger style
-          paths.push(route.path);
+            // Exclude options from endpoints array
+            let endpoints = _.without(_.keys(route.endpoints), 'options');
+
+            // Init currentPath
+            paths[key] = {};
+            let currentPath = paths[key];
+
+            // Loop through endpoints
+            _.each(endpoints, function(endpoint) {
+              let currentEndpoint = route.endpoints[endpoint];
+
+              // Check that swagger metadata exists in endpoint config
+              if(currentEndpoint.swagger) {
+                currentPath[endpoint] = {
+                  description: currentEndpoint.swagger.description,
+                  responses: currentEndpoint.swagger.responses
+                };
+              } else {
+                // Otherwise set undefined
+                currentPath[endpoint] = {
+                  description: "undefined",
+                  responses: "undefined"
+                };
+              }
+            });
+          }
         });
-        _.extend(doc, {"paths": paths});
 
+        // Add paths to Swagger doc
+        _.extend(doc, {"paths": paths});
+        // Return swagger.json
         return doc;
+
       } else {
         // Error handling
-        return {"error": "Swagger not configured properly."};
+        return {"error": "Swagger metadata not given in Restivus config."};
       }
     }
   });
 };
-
-/* Main meta
-{
-  "swagger": "2.0",
-  "info": {
-    "version": "1.0.0",
-    "title": "Swagger Petstore",
-    "description": "A sample API that uses a petstore as an example to demonstrate features in the swagger-2.0 specification",
-    "termsOfService": "http://swagger.io/terms/",
-    "contact": {
-      "name": "Swagger API Team"
-    },
-    "license": {
-      "name": "MIT"
-    }
-  },
-  // Generate automatically from Restivus fields and domain server info
-  "host": "petstore.swagger.io",
-  "basePath": "/api",
-  "schemes": [
-    "http"
-  ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
-
-  */
