@@ -22,5 +22,5 @@ Package.onTest(function(api) {
   api.use('tinytest');
   api.use('nimble:restivus@0.8.7');
   api.use('apinf:restivus-swagger');
-  api.use('test.js');
+  api.addFiles('test.js');
 });
