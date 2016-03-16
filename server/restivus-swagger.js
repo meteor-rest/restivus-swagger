@@ -1,4 +1,7 @@
 // Extension to Restivus
+// Parse URL
+const ParsedURL = Npm.require('url-parse');
+const URL = new ParsedURL(Meteor.absoluteUrl());
 
 // Add swagger route and generate valid swagger.json
 Restivus.prototype.addSwagger = function(path) {
@@ -13,6 +16,14 @@ Restivus.prototype.addSwagger = function(path) {
         let doc = {};
         // Add main meta from config
         _.extend(doc, config.swagger);
+
+        // Get host info
+        const url = {
+          "host": URL.host,
+          "basePath": ('/'+config.apiPath).slice(0,-1),
+          "schemes": [URL.protocol.slice(0, -1)]
+        }
+        _.extend(doc, url);
 
         // Loop through all routes
         let paths = {};
@@ -38,6 +49,7 @@ Restivus.prototype.addSwagger = function(path) {
               // Check that swagger metadata exists in endpoint config
               if(currentEndpoint.swagger) {
                 currentPath[endpoint] = {
+                  tags: currentEndpoint.swagger.tags,
                   description: currentEndpoint.swagger.description,
                   responses: currentEndpoint.swagger.responses
                 };
