@@ -33,12 +33,15 @@ APIV1 = new Restivus({
   }
 ```
 
-Step 2: For each endpoint define swagger metadata in swagger attribute (only description, responses supported currently)
+Step 2: For each endpoint define swagger metadata in swagger attribute (supports "description", "responses", "tags")
 
 ```
 endpoints: {
     get: {
       swagger: {
+        tags: [
+          "My endpoint"
+        ]
         description: "Describe your endpoint here",
         responses: {
           "200": {
