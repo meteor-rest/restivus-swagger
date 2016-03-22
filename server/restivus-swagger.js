@@ -11,7 +11,7 @@ Restivus.prototype.addSwagger = function(path) {
   restivus.addRoute(path, {authRequired: false}, {
     get: function () {
       // Check if swagger meta configuration exists
-      if(config.swagger) {
+      if(config.swagger !== undefined) {
         // Initialize doc object
         let doc = {};
         // Add main meta from config
@@ -32,8 +32,11 @@ Restivus.prototype.addSwagger = function(path) {
           if(route.path !== path &&
             route.path !== 'login' && route.path !== 'logout' )
           {
+            // Modify path parameter to swagger spec style
+            // Replaces :param with {param}
+            let newpath = route.path.replace(/:(\w+)/g, '{$1}');
             // Use path as key
-            let key = '/'.concat(route.path);
+            let key = '/'.concat(newpath);
 
             // Exclude options from endpoints array
             let endpoints = _.without(_.keys(route.endpoints), 'options');
@@ -46,19 +49,9 @@ Restivus.prototype.addSwagger = function(path) {
             _.each(endpoints, function(endpoint) {
               let currentEndpoint = route.endpoints[endpoint];
 
-              // Check that swagger metadata exists in endpoint config
-              if(currentEndpoint.swagger) {
-                currentPath[endpoint] = {
-                  tags: currentEndpoint.swagger.tags,
-                  description: currentEndpoint.swagger.description,
-                  responses: currentEndpoint.swagger.responses
-                };
-              } else {
-                // Otherwise set undefined
-                currentPath[endpoint] = {
-                  description: "undefined",
-                  responses: "undefined"
-                };
+              // Add swagger metadata if it exists in endpoint config
+              if(currentEndpoint.swagger !== undefined) {
+                currentPath[endpoint] = currentEndpoint.swagger;
               }
             });
           }
