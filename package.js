@@ -1,6 +1,6 @@
 Package.describe({
   name: 'apinf:restivus-swagger',
-  version: '0.1.2',
+  version: '0.2.0',
   // Brief, one-line summary of the package.
   summary: 'Generate Swagger doc for API',
   // URL to the Git repository containing the source code for this package.
