@@ -34,16 +34,20 @@ Restivus.prototype.addSwagger = function(path) {
         _.each(restivus._routes, function(route) {
           // Exclude swagger and login paths
           if(route.path !== path &&
-            route.path !== 'login' && route.path !== 'logout' )
+            route.path !== 'login' &&
+            route.path !== 'logout' )
           {
             // Modify path parameter to swagger spec style
             // Replaces :param with {param}
-            let newpath = route.path.replace(/:(\w+)/g, '{$1}');
+            const newPath = route.path.replace(/:(\w+)/g, '{$1}');
             // Use path as key
-            let key = '/'.concat(newpath);
+            const key = '/'.concat(newPath);
 
-            // Exclude options from endpoints array
-            let endpoints = _.without(_.keys(route.endpoints), 'options');
+            // Array of endpoint keys
+            const routeEndpoints = _.keys(route.endpoints);
+
+            // Exclude options from routeEndpoints array
+            const endpoints = _.without(routeEndpoints, 'options');
 
             // Init currentPath
             paths[key] = {};
