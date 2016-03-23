@@ -5,17 +5,21 @@ const URL = new ParsedURL(Meteor.absoluteUrl());
 
 // Add swagger route and generate valid swagger.json
 Restivus.prototype.addSwagger = function(path) {
-  // Call add Route
+  // Set constants
   const restivus = this;
   const config = restivus._config;
+  const swagger = restivus.swagger;
+
+  // Call add Route
   restivus.addRoute(path, {authRequired: false}, {
     get: function () {
-      // Check if swagger meta configuration exists
-      if(config.swagger !== undefined) {
+      // Check if swagger configuration exists
+      if(swagger !== undefined &&
+        swagger.meta !== undefined) {
         // Initialize doc object
         let doc = {};
         // Add main meta from config
-        _.extend(doc, config.swagger);
+        _.extend(doc, swagger.meta);
 
         // Get host info
         const url = {
@@ -59,6 +63,12 @@ Restivus.prototype.addSwagger = function(path) {
 
         // Add paths to Swagger doc
         _.extend(doc, {"paths": paths});
+
+        // Add definitions
+        if(swagger.definitions !== undefined) {
+          _.extend(doc, {"definitions": swagger.definitions});
+        }
+
         // Return swagger.json
         return doc;
 
