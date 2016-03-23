@@ -78,7 +78,7 @@ Restivus.prototype.addSwagger = function(path) {
 
       } else {
         // Error handling
-        return {"error": "Swagger metadata not given in Restivus config."};
+        return {"error": "Swagger configuration not given for Restivus."};
       }
     }
   });
