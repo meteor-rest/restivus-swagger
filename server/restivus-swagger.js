@@ -4,14 +4,14 @@ const ParsedURL = Npm.require('url-parse');
 const URL = new ParsedURL(Meteor.absoluteUrl());
 
 // Add swagger route and generate valid swagger.json
-Restivus.prototype.addSwagger = function(path) {
+Restivus.prototype.addSwagger = function(swaggerPath) {
   // Set constants
   const restivus = this;
   const config = restivus._config;
   const swagger = restivus.swagger;
 
   // Call add Route
-  restivus.addRoute(path, {authRequired: false}, {
+  restivus.addRoute(swaggerPath, {authRequired: false}, {
     get: function () {
       // Check if swagger configuration exists
       if(swagger !== undefined &&
@@ -33,7 +33,7 @@ Restivus.prototype.addSwagger = function(path) {
         let paths = {};
         _.each(restivus._routes, function(route) {
           // Exclude swagger and login paths
-          if(route.path !== path &&
+          if(route.path !== swaggerPath &&
             route.path !== 'login' &&
             route.path !== 'logout' )
           {
