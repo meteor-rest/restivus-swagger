@@ -14,9 +14,13 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
   restivus.addRoute(swaggerPath, {authRequired: false}, {
     get: function () {
       // Check if swagger configuration exists
-      if(swagger !== undefined &&
-        swagger.meta !== undefined) {
-        // Initialize doc object
+      if(swagger === undefined ||
+        swagger.meta === undefined) {
+          return {"error": "Swagger configuration not given for Restivus."};
+        }
+      else {
+        
+        // Initialize swagger.json documentation object
         let doc = {};
         // Add main meta from config
         _.extend(doc, swagger.meta);
@@ -75,10 +79,6 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
 
         // Return swagger.json
         return doc;
-
-      } else {
-        // Error handling
-        return {"error": "Swagger configuration not given for Restivus."};
       }
     }
   });
