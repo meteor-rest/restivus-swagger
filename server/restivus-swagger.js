@@ -4,18 +4,26 @@ const ParsedURL = Npm.require('url-parse');
 const URL = new ParsedURL(Meteor.absoluteUrl());
 
 // Add swagger route and generate valid swagger.json
-Restivus.prototype.addSwagger = function(path) {
-  // Call add Route
+Restivus.prototype.addSwagger = function(swaggerPath) {
+  // Set constants
   const restivus = this;
   const config = restivus._config;
-  restivus.addRoute(path, {authRequired: false}, {
+  const swagger = restivus.swagger;
+
+  // Call add Route
+  restivus.addRoute(swaggerPath, {authRequired: false}, {
     get: function () {
-      // Check if swagger meta configuration exists
-      if(config.swagger) {
-        // Initialize doc object
+      // Check if swagger configuration exists
+      if(swagger === undefined ||
+        swagger.meta === undefined) {
+          return {"error": "Swagger configuration not given for Restivus."};
+        }
+      else {
+        
+        // Initialize swagger.json documentation object
         let doc = {};
         // Add main meta from config
-        _.extend(doc, config.swagger);
+        _.extend(doc, swagger.meta);
 
         // Get host info
         const url = {
@@ -29,14 +37,21 @@ Restivus.prototype.addSwagger = function(path) {
         let paths = {};
         _.each(restivus._routes, function(route) {
           // Exclude swagger and login paths
-          if(route.path !== path &&
-            route.path !== 'login' && route.path !== 'logout' )
+          if(route.path !== swaggerPath &&
+            route.path !== 'login' &&
+            route.path !== 'logout' )
           {
+            // Modify path parameter to swagger spec style
+            // Replaces :param with {param}
+            const newPath = route.path.replace(/:(\w+)/g, '{$1}');
             // Use path as key
-            let key = '/'.concat(route.path);
+            const key = '/'.concat(newPath);
 
-            // Exclude options from endpoints array
-            let endpoints = _.without(_.keys(route.endpoints), 'options');
+            // Array of endpoint keys
+            const routeEndpoints = _.keys(route.endpoints);
+
+            // Exclude options from routeEndpoints array
+            const endpoints = _.without(routeEndpoints, 'options');
 
             // Init currentPath
             paths[key] = {};
@@ -46,32 +61,24 @@ Restivus.prototype.addSwagger = function(path) {
             _.each(endpoints, function(endpoint) {
               let currentEndpoint = route.endpoints[endpoint];
 
-              // Check that swagger metadata exists in endpoint config
-              if(currentEndpoint.swagger) {
-                currentPath[endpoint] = {
-                  tags: currentEndpoint.swagger.tags,
-                  description: currentEndpoint.swagger.description,
-                  responses: currentEndpoint.swagger.responses
-                };
-              } else {
-                // Otherwise set undefined
-                currentPath[endpoint] = {
-                  description: "undefined",
-                  responses: "undefined"
-                };
+              // Add swagger metadata if it exists in endpoint config
+              if(currentEndpoint.swagger !== undefined) {
+                currentPath[endpoint] = currentEndpoint.swagger;
               }
             });
           }
         });
 
         // Add paths to Swagger doc
-        _.extend(doc, {"paths": paths});
+        doc.paths = paths;
+
+        // Add definitions
+        if(swagger.definitions !== undefined) {
+          doc.definitions = swagger.definitions;
+        }
+
         // Return swagger.json
         return doc;
-
-      } else {
-        // Error handling
-        return {"error": "Swagger metadata not given in Restivus config."};
       }
     }
   });
