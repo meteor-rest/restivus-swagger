@@ -66,11 +66,11 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
         });
 
         // Add paths to Swagger doc
-        _.extend(doc, {"paths": paths});
+        doc.paths = paths;
 
         // Add definitions
         if(swagger.definitions !== undefined) {
-          _.extend(doc, {"definitions": swagger.definitions});
+          doc.definitions = swagger.definitions;
         }
 
         // Return swagger.json
