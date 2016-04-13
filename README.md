@@ -1,6 +1,8 @@
 ## Restivus Swagger plugin
 
-### How to use
+Generate swagger.json for your Restivus API
+
+## How to use
 
 Step 1: Define and attach swagger object to Restivus
 
