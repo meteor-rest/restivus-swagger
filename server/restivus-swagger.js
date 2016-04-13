@@ -19,19 +19,25 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
           return {"error": "Swagger configuration not given for Restivus."};
         }
       else {
-        
+
         // Initialize swagger.json documentation object
         let doc = {};
+
         // Add main meta from config
         _.extend(doc, swagger.meta);
 
-        // Get host info
-        const url = {
-          "host": URL.host,
-          "basePath": ('/'+config.apiPath).slice(0,-1),
-          "schemes": [URL.protocol.slice(0, -1)]
+        // If host, basePath and schemes are not given in meta, autodetect
+        if( !('host' in swagger.meta) &&
+        !('basePath' in swagger.meta) &&
+        !('schemes' in swagger.meta)) {
+          // Get host info
+          const url = {
+            "host": URL.host,
+            "basePath": ('/'+config.apiPath).slice(0,-1),
+            "schemes": [URL.protocol.slice(0, -1)]
+          }
+          _.extend(doc, url);
         }
-        _.extend(doc, url);
 
         // Loop through all routes
         let paths = {};
