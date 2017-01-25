@@ -1,10 +1,17 @@
+## For maintenance & development
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/vjyrkka)
+
 ## Restivus Swagger plugin
 
 Generate swagger.json for your Restivus API
 
 ## How to use
 
-Step 1: Define and attach swagger object to Restivus
+Step 1: Install package
+
+```meteor add ajkwak:restivus-swagger```
+
+Step 2: Define and attach swagger object to Restivus
 
 ```
 APIV1 = new Restivus({
@@ -52,7 +59,7 @@ APIV1.swagger = {
 }
 ```
 
-Step 2: For each endpoint define swagger metadata in swagger attribute, check spec http://swagger.io/specification/
+Step 3: For each endpoint define swagger metadata in swagger attribute, check spec http://swagger.io/specification/
 
 ```
 endpoints: {
@@ -74,7 +81,7 @@ endpoints: {
     }
 ```
 
-Step 3: Define route for Swagger
+Step 4: Define route for Swagger
 
 ```
 // Generates swagger.json to /api/v1/swagger.json
