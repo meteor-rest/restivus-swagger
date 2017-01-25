@@ -1,3 +1,6 @@
+## For maintenance & development
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/vjyrkka)
+
 ## Restivus Swagger plugin
 
 Generate swagger.json for your Restivus API
