@@ -12,12 +12,12 @@ Npm.depends({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
-  api.use(['ecmascript','underscore','nimble:restivus@0.8.12']);
+  api.use(['ecmascript','underscore','nimble:restivus@=0.8.11']);
   api.addFiles('server/restivus-swagger.js', ['server']);
 });
 
 Package.onTest(function(api) {
-  api.use(['ecmascript','underscore','nimble:restivus@0.8.12']);
+  api.use(['ecmascript','underscore','nimble:restivus@=0.8.11']);
   api.use('ajkwak:restivus-swagger');
   api.use('tinytest');
   api.addFiles('test.js');
