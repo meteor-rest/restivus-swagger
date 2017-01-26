@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ajkwak:restivus-swagger',
-  version: '0.2.3',
+  version: '0.2.4',
   summary: 'Generate Swagger doc for API',
   git: 'https://github.com/alfredjkwak/restivus-swagger',
   documentation: 'README.md'
