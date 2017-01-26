@@ -39,13 +39,30 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
           _.extend(doc, url);
         }
 
+        // Add securityDefinitions for default authentication
+        if(config.useDefaultAuth) {
+          const security = {
+            securityDefinitions: {
+              userId: {
+                type: 'apiKey',
+                name: 'X-User-Id',
+                in: 'header',
+              },
+              authToken: {
+                type: 'apiKey',
+                name: 'X-Auth-Token',
+                in: 'header',
+              },
+            }
+          }
+          _.extend(doc, security);
+        }
+
         // Loop through all routes
         let paths = {};
         _.each(restivus._routes, function(route) {
-          // Exclude swagger, login, logout and users paths
+          // Exclude swagger and possible users paths
           if(route.path !== swaggerPath &&
-            route.path !== 'login' &&
-            route.path !== 'logout' &&
             !route.path.includes('users') )
           {
             // Modify path parameter to swagger spec style
@@ -68,9 +85,54 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
             _.each(endpoints, function(endpoint) {
               let currentEndpoint = route.endpoints[endpoint];
 
-              // Add swagger metadata if it exists in endpoint config
+              // Add user-defined swagger metadata for endpoint if exists
               if(currentEndpoint.swagger !== undefined) {
                 currentPath[endpoint] = currentEndpoint.swagger;
+              // Add swagger metadata for default authentication endpoints
+              } else if(config.useDefaultAuth) {
+                const authTag = 'Authentication'
+                if(route.path === 'login') {
+                  currentPath[endpoint] = {
+                    tags: [
+                      authTag,
+                    ],
+                    description: 'Login',
+                    parameters: [
+                      {
+                        name: 'authentication',
+                        in: 'body',
+                        description: 'User credentials',
+                        required: true,
+                        schema: {
+                          $ref: '#/definitions/Authentication',
+                        },
+                      },
+                    ],
+                    responses: {
+                      200: {
+                        description: 'Successful login',
+                      },
+                      401: {
+                        description: 'Unauthorized',
+                      },
+                    },
+                  }
+                } else if(route.path === 'logout' && endpoint === 'post') {
+                  currentPath[endpoint] = {
+                    tags: [
+                      authTag,
+                    ],
+                    description: 'Logout',
+                    responses: {
+                      200: {
+                        description: 'Successful logout',
+                      },
+                      401: {
+                        description: 'Unauthorized',
+                      },
+                    },
+                  }
+                }
               }
             });
           }
@@ -79,10 +141,34 @@ Restivus.prototype.addSwagger = function(swaggerPath) {
         // Add paths to Swagger doc
         doc.paths = paths;
 
-        // Add definitions
-        if(swagger.definitions !== undefined) {
-          doc.definitions = swagger.definitions;
+        // Init definitions object
+        let definitions = {};
+        // Default authentication object definition
+        if(config.useDefaultAuth) {
+          _.extend(definitions, {
+            Authentication: {
+              type: 'object',
+              required: [
+                'username',
+                'password',
+              ],
+              properties: {
+                username: {
+                  type: 'string',
+                },
+                password: {
+                  type: 'string',
+                }
+              }
+            },
+          });
         }
+        // Check if user-defined definitions
+        if(swagger.definitions !== undefined) {
+          _.extend(definitions, swagger.definitions);
+        }
+        // Attach all definitions to Swagger doc
+        doc.definitions = definitions;
 
         // Return swagger.json
         return doc;
