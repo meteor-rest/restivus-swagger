@@ -1,9 +1,15 @@
-## For maintenance & development
+## Keep development going on
+<img src="http://oi68.tinypic.com/uro76.jpg" width="20%">
+
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/vjyrkka)
 
 ## Restivus Swagger plugin
 
 Generate swagger.json for your Restivus API
+
+Restivus: https://github.com/kahmali/meteor-restivus
+
+Swagger: http://swagger.io/specification/
 
 ## How to use
 
@@ -13,7 +19,7 @@ Step 1: Install package
 
 Step 2: Define and attach swagger object to Restivus
 
-```
+```js
 APIV1 = new Restivus({
   ...
 })
@@ -61,7 +67,7 @@ APIV1.swagger = {
 
 Step 3: For each endpoint define swagger metadata in swagger attribute, check spec http://swagger.io/specification/
 
-```
+```js
 endpoints: {
     get: {
       swagger: {
@@ -83,7 +89,7 @@ endpoints: {
 
 Step 4: Define route for Swagger
 
-```
+```js
 // Generates swagger.json to /api/v1/swagger.json
 APIV1.addSwagger('swagger.json');
 ```
