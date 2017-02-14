@@ -7,7 +7,7 @@
 
 Generate swagger.json for your Restivus API
 
-Restivus: https://github.com/kahmali/meteor-restivus
+Restivus: https://github.com/meteor-rest/restivus
 
 Swagger: http://swagger.io/specification/
 
@@ -15,7 +15,7 @@ Swagger: http://swagger.io/specification/
 
 Step 1: Install package
 
-```meteor add ajkwak:restivus-swagger```
+```meteor add mrest:restivus-swagger```
 
 Step 2: Define and attach swagger object to Restivus
 
