@@ -1,9 +1,7 @@
-## Keep development going on
+## Keep development going on [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/vjyrkka)
 <img src="http://oi68.tinypic.com/uro76.jpg" width="20%">
 
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/vjyrkka)
-
-## Restivus Swagger plugin
+## Restivus Swagger plugin [![Gitter Chat](http://img.shields.io/badge/chat-online-brightgreen.svg)](https://gitter.im/meteor-rest/restivus-swagger)
 
 Generate swagger.json for your Restivus API
 
